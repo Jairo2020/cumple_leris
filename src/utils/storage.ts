@@ -9,14 +9,14 @@ const STORAGE_KEYS = {
 };
 
 export const getStoredUnlockedMemories = (): number[] => {
-  if (typeof window === 'undefined') return [1];
+  if (typeof window === 'undefined') return [];
   try {
     const data = localStorage.getItem(STORAGE_KEYS.UNLOCKED_MEMORIES);
-    if (!data) return [1]; // El primer reto (Memoria 1) siempre está disponible
+    if (!data) return []; // Inicialmente ningún reto está resuelto
     const parsed = JSON.parse(data);
-    return Array.isArray(parsed) && parsed.length > 0 ? parsed : [1];
+    return Array.isArray(parsed) ? parsed : [];
   } catch {
-    return [1];
+    return [];
   }
 };
 

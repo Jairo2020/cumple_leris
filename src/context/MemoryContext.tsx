@@ -37,7 +37,7 @@ interface MemoryContextType {
 const MemoryContext = createContext<MemoryContextType | undefined>(undefined);
 
 export const MemoryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [unlockedIds, setUnlockedIds] = useState<number[]>([1]);
+  const [unlockedIds, setUnlockedIds] = useState<number[]>([]);
   const [activeMemoryId, setActiveMemoryIdState] = useState<number | null>(null);
   const [isBooted, setIsBooted] = useState<boolean>(false);
   const [isMuted, setIsMuted] = useState<boolean>(false);
@@ -119,7 +119,7 @@ export const MemoryProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const resetProgress = () => {
     clearStoredProgress();
-    setUnlockedIds([1]);
+    setUnlockedIds([]);
     setActiveMemoryIdState(null);
     setIsBooted(false);
     setActiveHintLevel(0);

@@ -1,11 +1,18 @@
 /** @type {import('next').NextConfig} */
+const isGithubPages = process.env.NODE_ENV === "production";
+
 const nextConfig = {
-  output: 'export',
+  output: "export",
+
+  trailingSlash: true,
+
   images: {
     unoptimized: true,
   },
-  // Compatible con GitHub Pages si se despliega en subruta o raíz
-  trailingSlash: true,
+
+  basePath: isGithubPages ? "/cumple_leris" : "",
+
+  assetPrefix: isGithubPages ? "/cumple_leris/" : "",
 };
 
 module.exports = nextConfig;

@@ -6,20 +6,25 @@ import { GlassCard } from '@/components/ui/GlassCard';
 import { soundFx } from '@/utils/audio';
 import { getStoredLetterRead, saveStoredLetterRead } from '@/utils/storage';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Gift, Heart, Sparkles, BookOpen, Star, Stethoscope, Terminal, MapPin } from 'lucide-react';
+import { Gift, Heart, Sparkles, BookOpen, Star, Stethoscope, Terminal, MapPin, X } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 const LETTER_TEXT = `Leris,
 
 Ha sido algo verdaderamente bonito haberte conocido.
 
-Recordar aquellos días en Cartagena —las miradas silenciosas durante el almuerzo del viernes 17 de Julio, la noche en que el pastor nos presentó y tuvimos la oportunidad de hablar por primera vez entre risas y una gran comodidad, y el sábado 18 cuando me animé a decirte que quería que nos conociéramos mejor porque vi en ti a una chica totalmente diferente, fuera de lo común— me llena de gratitud y una gran sonrisa.
+Recordar aquellos días en Cartagena —las miradas silenciosas durante el almuerzo, y tu sonrisa radiante como el sol después de la lluvia, traspasando hasta las más densas nubes. La noche en que el pastor nos presentó y tuvimos la oportunidad de hablar por primera vez entre risas y una gran comodidad, y el sábado 18 cuando me animé a decirte que quería que nos conociéramos mejor porque vi en ti a una chica totalmente diferente, fuera de lo común— me llena de gratitud y una gran sonrisa.
 
-Aprecio mucho tu pasión por las estrellas y las galaxias, esa curiosidad tan bonita por el universo, y por supuesto tu vocación como médica, ejerciendo con tanto corazón y dedicación para llevar salud, cuidado y paz a quienes te rodean.
+Aprecio mucho tu pasión por las estrellas y las galaxias, por ende he diseñado un poco la temática de la web inspirado en lo que me dijiste, ver las estrellas en una noche estrellada, esa curiosidad tan bonita por el universo, y por supuesto tu vocación como médica, ejerciendo con tanto corazón y dedicación para llevar salud, cuidado y paz a quienes te rodean.
 
-Le pido a Dios que en este nuevo año de vida que inicia este 13 de Agosto te bendiga grandemente en cada paso que des, que cuide tu vida y la de tu familia en Turbaco, y que el 2026 esté repleto de salud, proyectos cumplidos y una inmensa alegría.
+Le pido a Dios que en este nuevo año de vida que inicia este 13 de Agosto te bendiga grandemente en cada paso que des, que cuide tu vida y la de tu familia en donde quiera que se encuentre, y que el 2026 esté repleto de salud, proyectos cumplidos y una inmensa alegría.
 
-Espero que sigamos construyendo buenos recuerdos y compartiendo conversaciones sinceras a lo largo del tiempo.
+Espero que sigamos construyendo buenos recuerdos, descubriendo las cosas bonitas que podemos darnos y compartiendo conversaciones sinceras a lo largo del tiempo.
+
+Con mucho cariño:
+Jairo Rohatan Zapata
+
+¡Felicidades por llegar hasta aquí y vivir el proceso! Me siento muy contento por este logro tuyo.
 
 ¡Feliz cumpleaños, Leris! • 13 de Agosto de 2026 ✨🌌🩺`;
 
@@ -35,6 +40,7 @@ export const GrandFinale: React.FC = () => {
     getStoredLetterRead()
   );
   const [isGiftOpened, setIsGiftOpened] = useState<boolean>(false);
+  const [activeModal, setActiveModal] = useState<'heart' | 'doctor' | null>(null);
 
   useEffect(() => {
     // Si la carta YA fue leída previamente, mostrar de una y NO ejecutar ningún temporizador
@@ -82,6 +88,16 @@ export const GrandFinale: React.FC = () => {
     }
   };
 
+  const handleHeartClick = () => {
+    setActiveModal('heart');
+    soundFx.playCelebration();
+  };
+
+  const handleDoctorClick = () => {
+    setActiveModal('doctor');
+    soundFx.playUnlock();
+  };
+
   return (
     <div className="w-full max-w-3xl mx-auto space-y-8 relative z-10 py-6">
       {/* Botón superior para volver al mapa inicial */}
@@ -104,14 +120,27 @@ export const GrandFinale: React.FC = () => {
       {/* Carta principal */}
       <GlassCard className="p-6 sm:p-10 border-amber-500/30 shadow-[0_0_50px_rgba(245,158,11,0.25)] bg-slate-950/85">
         <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-6">
-          <div className="flex items-center space-x-2 text-amber-400 font-mono text-xs">
-            <Heart className="w-4 h-4 text-rose-400 fill-rose-400 animate-pulse" />
+          {/* Elemento Interactivo del Corazón */}
+          <motion.div
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={handleHeartClick}
+            className="flex items-center space-x-2 text-amber-400 font-mono text-xs cursor-pointer hover:text-rose-300 transition-colors group"
+          >
+            <Heart className="w-4 h-4 text-rose-400 fill-rose-400 animate-pulse group-hover:scale-110 transition-transform" />
             <span>MENSAJE DESENCRIPTADO // CARTA DE CUMPLEAÑOS 2026</span>
-          </div>
-          <div className="flex items-center space-x-2 text-xs font-mono text-purple-300">
-            <Stethoscope className="w-4 h-4" />
+          </motion.div>
+
+          {/* Elemento Interactivo de la Doctora */}
+          <motion.div
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={handleDoctorClick}
+            className="flex items-center space-x-2 text-xs font-mono text-purple-300 cursor-pointer hover:text-purple-200 transition-colors group"
+          >
+            <Stethoscope className="w-4 h-4 text-purple-400 group-hover:rotate-12 transition-transform" />
             <span>Dra. Leris • Cartagena &amp; Turbaco</span>
-          </div>
+          </motion.div>
         </div>
 
         {/* Texto de la Carta */}
@@ -219,6 +248,102 @@ export const GrandFinale: React.FC = () => {
               </motion.div>
             )}
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Modal Interactivo del Corazón */}
+      <AnimatePresence>
+        {activeModal === 'heart' && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-lg p-6 sm:p-8 rounded-3xl bg-slate-900 border border-rose-500/40 shadow-[0_0_60px_rgba(244,63,94,0.35)] space-y-5"
+            >
+              <button
+                onClick={() => setActiveModal(null)}
+                className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white rounded-full bg-slate-800/60 hover:bg-slate-800 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="flex items-center space-x-3 text-rose-400 font-mono text-xs">
+                <Heart className="w-6 h-6 text-rose-400 fill-rose-400 animate-pulse" />
+                <span className="uppercase tracking-widest font-bold">Reflexión Sincera // La Semilla</span>
+              </div>
+
+              <h3 className="text-xl font-bold text-slate-100 leading-snug">
+                Construir con paciencia, fe y verdad...
+              </h3>
+
+              <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-100 text-sm leading-relaxed space-y-3 font-sans">
+                <p>
+                  Las mejores historias no se improvisan ni se apresuran. Se construyen día a día alimentando una <strong>amistad verdadera</strong>, la <strong>confianza</strong>, el <strong>respeto</strong>, la <strong>sinceridad</strong> y una profunda fe en Dios.
+                </p>
+                <p>
+                  Si alimentamos esa amistad y esa confianza en Dios con paciencia, confío de todo corazón en que podremos llegar juntos al mejor de los finales. ✨🙏❤️
+                </p>
+              </div>
+
+              <div className="flex justify-end pt-2">
+                <button
+                  onClick={() => setActiveModal(null)}
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-purple-600 hover:from-rose-400 hover:to-purple-500 text-white font-semibold text-xs transition-all shadow-md"
+                >
+                  Guardar en el corazón ✨
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Modal Interactivo de la Doctora */}
+      <AnimatePresence>
+        {activeModal === 'doctor' && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-lg p-6 sm:p-8 rounded-3xl bg-slate-900 border border-purple-500/40 shadow-[0_0_60px_rgba(168,85,247,0.35)] space-y-5"
+            >
+              <button
+                onClick={() => setActiveModal(null)}
+                className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white rounded-full bg-slate-800/60 hover:bg-slate-800 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="flex items-center space-x-3 text-purple-400 font-mono text-xs">
+                <Stethoscope className="w-6 h-6 text-purple-400 animate-bounce" />
+                <span className="uppercase tracking-widest font-bold">Homenaje // Vocación Médica</span>
+              </div>
+
+              <h3 className="text-xl font-bold text-slate-100 leading-snug">
+                Dra. Leris • Guiada en cada paso
+              </h3>
+
+              <div className="p-4 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-100 text-sm leading-relaxed space-y-3 font-sans">
+                <p>
+                  Ser médica va mucho más allá de una profesión: es la hermosa vocación de brindar salud, tranquilidad y cuidado a las personas con una empatía auténtica.
+                </p>
+                <p>
+                  Sé que en las decisiones difíciles Dios te habla de una manera muy especial, y confío plenamente en que lo seguirá haciendo siempre para guiar tu sabiduría, tus manos y tu vida en cada jornada, Dra. Leris. 🩺✨🌌
+                </p>
+              </div>
+
+              <div className="flex justify-end pt-2">
+                <button
+                  onClick={() => setActiveModal(null)}
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-cyan-500 hover:from-purple-400 hover:to-cyan-400 text-white font-semibold text-xs transition-all shadow-md"
+                >
+                  Dra. Leris 🩺✨
+                </button>
+              </div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </div>

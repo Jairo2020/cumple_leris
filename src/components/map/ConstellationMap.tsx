@@ -30,7 +30,7 @@ export const ConstellationMap: React.FC = () => {
               Constelación de Memorias
             </h1>
             <p className="text-xs sm:text-sm text-slate-400 mt-1">
-              Cada nodo representa un fragmento cifrado. Resuelve los acertijos para iluminar el firmamento.
+              Cada estrella representa un fragmento cifrado. Resuelve los acertijos para encender el firmamento.
             </p>
           </div>
 
@@ -40,11 +40,11 @@ export const ConstellationMap: React.FC = () => {
               className="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 via-rose-500 to-purple-600 text-white font-semibold text-sm shadow-[0_0_25px_rgba(245,158,11,0.5)] animate-pulse flex items-center space-x-2 shrink-0"
             >
               <Sparkles className="w-4 h-4" />
-              <span>Revelar Gran Final & El Libro</span>
+              <span>Revelar Gran Final &amp; El Libro</span>
             </button>
           ) : (
             <div className="text-right font-mono text-xs text-slate-400 bg-slate-900/80 border border-white/10 px-4 py-2 rounded-xl">
-              <span>Siguiente Fragmento: </span>
+              <span>Siguiente Estrella: </span>
               <span className="text-cyan-300 font-semibold">#{nextAvailableId}</span>
             </div>
           )}
@@ -57,12 +57,12 @@ export const ConstellationMap: React.FC = () => {
         <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-40">
           <defs>
             <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.8" />
-              <stop offset="100%" stopColor="#a855f7" stopOpacity="0.8" />
+              <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.9" />
+              <stop offset="100%" stopColor="#a855f7" stopOpacity="0.9" />
             </linearGradient>
           </defs>
 
-          {/* Dibujar líneas entre nodos consecutivos */}
+          {/* Dibujar líneas entre estrellas consecutivas */}
           {MEMORIES_DATA.map((memory, idx) => {
             if (idx === MEMORIES_DATA.length - 1) return null;
             const nextMem = MEMORIES_DATA[idx + 1];
@@ -83,7 +83,7 @@ export const ConstellationMap: React.FC = () => {
           })}
         </svg>
 
-        {/* Nodos de Memorias */}
+        {/* Estrellas de la Constelación */}
         <div className="relative w-full h-[460px] sm:h-[540px]">
           {MEMORIES_DATA.map((memory) => {
             const isUnlocked = unlockedIds.includes(memory.id);
@@ -101,7 +101,7 @@ export const ConstellationMap: React.FC = () => {
                 className="absolute z-10"
               >
                 <motion.button
-                  whileHover={{ scale: isLocked ? 1 : 1.18 }}
+                  whileHover={{ scale: isLocked ? 1 : 1.25 }}
                   transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                   onClick={() => {
                     if (!isLocked) {
@@ -109,26 +109,66 @@ export const ConstellationMap: React.FC = () => {
                     }
                   }}
                   disabled={isLocked}
-                  className={`group relative flex flex-col items-center justify-center p-3 rounded-full transition-all duration-300 ${
-                    isUnlocked
-                      ? 'bg-slate-900 border-2 border-cyan-400 shadow-[0_0_20px_rgba(56,189,248,0.5)] text-cyan-300'
-                      : isNext
-                      ? 'bg-purple-950 border-2 border-purple-400 shadow-[0_0_20px_rgba(168,85,247,0.6)] text-purple-200 animate-bounce'
-                      : 'bg-slate-950/80 border border-slate-700 text-slate-600 opacity-60 cursor-not-allowed'
+                  className={`group relative flex flex-col items-center justify-center transition-all duration-300 ${
+                    isLocked ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
                   }`}
                 >
-                  {/* Icono de estado */}
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center">
-                    {isUnlocked ? (
-                      <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-cyan-400" />
-                    ) : isNext ? (
-                      <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-purple-300 animate-spin" />
-                    ) : (
-                      <Lock className="w-4 h-4 text-slate-500" />
-                    )}
+                  {/* Resplandor y halo estelar */}
+                  {isUnlocked && (
+                    <div className="absolute inset-0 rounded-full bg-cyan-400/30 blur-md animate-pulse pointer-events-none" />
+                  )}
+                  {isNext && (
+                    <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-amber-400 opacity-60 blur-lg animate-spin pointer-events-none" />
+                  )}
+
+                  {/* SVG de la Estrella de Constelación (4 Puntas Estelares) */}
+                  <div
+                    className={`relative flex items-center justify-center transition-all duration-300 ${
+                      isUnlocked
+                        ? 'w-12 h-12 sm:w-14 sm:h-14 text-cyan-300 drop-shadow-[0_0_15px_rgba(56,189,248,0.9)]'
+                        : isNext
+                        ? 'w-14 h-14 sm:w-16 sm:h-16 text-amber-300 drop-shadow-[0_0_20px_rgba(245,158,11,1)] animate-bounce'
+                        : 'w-10 h-10 sm:w-12 sm:h-12 text-slate-700 opacity-60'
+                    }`}
+                  >
+                    <svg viewBox="0 0 100 100" className="w-full h-full">
+                      {/* Puntas principales de la estrella */}
+                      <path
+                        d="M50 0 L59 38 L98 50 L59 62 L50 100 L41 62 L2 50 L41 38 Z"
+                        className={
+                          isUnlocked
+                            ? 'fill-cyan-950/90 stroke-cyan-400 stroke-[3]'
+                            : isNext
+                            ? 'fill-purple-950/90 stroke-amber-400 stroke-[3]'
+                            : 'fill-slate-950/80 stroke-slate-700 stroke-[2]'
+                        }
+                      />
+                      {/* Destello diagonal secundario */}
+                      <path
+                        d="M50 18 L54 44 L78 50 L54 56 L50 82 L46 56 L22 50 L46 44 Z"
+                        className={
+                          isUnlocked
+                            ? 'fill-cyan-300/80'
+                            : isNext
+                            ? 'fill-amber-300/90'
+                            : 'fill-slate-700/40'
+                        }
+                      />
+                    </svg>
+
+                    {/* Icono central de estado en la estrella */}
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      {isUnlocked ? (
+                        <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-200 drop-shadow-md" />
+                      ) : isNext ? (
+                        <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-amber-200 animate-spin drop-shadow-md" />
+                      ) : (
+                        <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-500" />
+                      )}
+                    </div>
                   </div>
 
-                  {/* Tooltip / Etiqueta del Nodo */}
+                  {/* Tooltip / Etiqueta de la Estrella */}
                   <div className="absolute top-full mt-2 w-32 sm:w-40 text-center pointer-events-none z-20">
                     <span
                       className={`block font-mono text-[10px] sm:text-xs font-semibold px-2 py-1 rounded-md backdrop-blur-md border ${
@@ -172,8 +212,8 @@ export const ConstellationMap: React.FC = () => {
                   <span className="font-mono text-[10px] text-slate-400 block">
                     {memory.dateTag}
                   </span>
-                  <h3 className="text-sm font-semibold text-slate-200 mt-0.5">
-                    {memory.title}
+                  <h3 className="text-sm font-semibold text-slate-200 mt-0.5 flex items-center gap-1.5">
+                    <span>{memory.title}</span>
                   </h3>
                   <p className="text-xs text-slate-400 line-clamp-1 mt-1">
                     {memory.subtitle}

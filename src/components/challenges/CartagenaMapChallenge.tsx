@@ -5,8 +5,9 @@ import { MemoryFragment } from '@/data/memories';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { HintDrawer } from '@/components/ui/HintDrawer';
 import { soundFx } from '@/utils/audio';
-import { Compass, MapPin, CheckCircle2, Sparkles } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Compass, MapPin, CheckCircle2, Sparkles, CompassIcon, CloudFog, Sun } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import confetti from 'canvas-confetti';
 
 interface ChallengeProps {
   memory: MemoryFragment;
@@ -16,6 +17,9 @@ interface ChallengeProps {
 export const CartagenaMapChallenge: React.FC<ChallengeProps> = ({ memory, onSuccess }) => {
   const [visited, setVisited] = useState<number[]>([]);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  
+  // Estado para el evento simulado de "Aparente Pérdida y Reencuentro con la Luz"
+  const [lostPhase, setLostPhase] = useState<'fog' | 'found' | 'cleared'>('fog');
 
   const waypoints = [
     { id: 1, name: 'Torre del Reloj', x: 20, y: 70 },
@@ -43,8 +47,113 @@ export const CartagenaMapChallenge: React.FC<ChallengeProps> = ({ memory, onSucc
     }
   };
 
+  const handleSeekLight = () => {
+    setLostPhase('found');
+    soundFx.playCelebration();
+    try {
+      confetti({
+        particleCount: 120,
+        spread: 90,
+        origin: { y: 0.5 },
+        colors: ['#38bdf8', '#f59e0b', '#a855f7', '#10b981'],
+      });
+    } catch {
+      // Ignorar
+    }
+  };
+
+  const handleClearFog = () => {
+    setLostPhase('cleared');
+    soundFx.playUnlock();
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
+      {/* Modal / Experiencia Simulada de Pérdida en la Niebla y Reencuentro con Dios */}
+      <AnimatePresence>
+        {lostPhase !== 'cleared' && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-lg">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: -20 }}
+              className="relative w-full max-w-lg p-6 sm:p-8 rounded-3xl bg-slate-900 border border-cyan-500/40 shadow-[0_0_60px_rgba(56,189,248,0.3)] space-y-6 text-center"
+            >
+              {lostPhase === 'fog' ? (
+                /* Fase 1: Aparente pérdida en la mitad del camino */
+                <div className="space-y-5">
+                  <div className="w-16 h-16 mx-auto rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+                    <CloudFog className="w-10 h-10 animate-pulse" />
+                  </div>
+
+                  <div className="space-y-2">
+                    <span className="text-[11px] font-mono text-cyan-400 uppercase tracking-widest block font-semibold">
+                      ⚠️ MITAD DEL RECORRIDO ESTELAR • ALERTA DE NAVEGACIÓN
+                    </span>
+                    <h3 className="text-lg sm:text-xl font-bold text-slate-100">
+                      El camino parece haberse cubierto de niebla...
+                    </h3>
+                  </div>
+
+                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
+                    En la mitad de esta constelación, las señales parecen haberse desorientado momentáneamente en la oscuridad de la noche.
+                  </p>
+
+                  <div className="p-3.5 rounded-2xl bg-cyan-950/80 border border-cyan-500/30 text-xs text-cyan-200 font-mono italic">
+                    &quot;A veces en la vida nos sentimos desorientados... pero nunca estamos solos.&quot;
+                  </div>
+
+                  <button
+                    onClick={handleSeekLight}
+                    className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-cyan-500 via-purple-600 to-amber-500 hover:from-cyan-400 hover:to-amber-400 text-white font-semibold text-xs sm:text-sm shadow-[0_0_25px_rgba(56,189,248,0.4)] transition-all flex items-center justify-center space-x-2"
+                  >
+                    <Sparkles className="w-4 h-4 animate-spin" />
+                    <span>Buscar la Luz con Fe &amp; Confianza en Dios 🙏</span>
+                  </button>
+                </div>
+              ) : (
+                /* Fase 2: Reencuentro, revelación de luz y superación juntos */
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="space-y-5"
+                >
+                  <div className="w-16 h-16 mx-auto rounded-2xl bg-amber-500/20 border border-amber-400/50 flex items-center justify-center text-amber-300 shadow-[0_0_30px_rgba(245,158,11,0.5)]">
+                    <Sun className="w-10 h-10 animate-spin" />
+                  </div>
+
+                  <div className="space-y-2">
+                    <span className="text-[11px] font-mono text-amber-300 uppercase tracking-widest block font-semibold">
+                      ✨ LUZ ENCONTRADA // EL CAMINO DE VUELTA
+                    </span>
+                    <h3 className="text-lg sm:text-xl font-bold text-amber-100">
+                      ¡La oscuridad se disipa y el camino resurge!
+                    </h3>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-100 text-xs sm:text-sm leading-relaxed space-y-3 font-sans text-left">
+                    <p>
+                      En la vida y en el camino compartido, pueden llegar momentos de aparente pérdida o incertidumbre... pero <strong>con la ayuda de Dios siempre hay un camino de vuelta</strong>.
+                    </p>
+                    <p>
+                      No hay noche tan oscura que apague la fe. Caminando juntos y confiando en Él, siempre se puede salir adelante. ✨🙏🌌
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={handleClearFog}
+                    className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-amber-500 to-emerald-500 hover:from-amber-400 hover:to-emerald-400 text-slate-950 font-bold text-xs sm:text-sm shadow-[0_0_25px_rgba(245,158,11,0.4)] transition-all flex items-center justify-center space-x-2"
+                  >
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>Reencontrar el Camino &amp; Continuar el Acertijo 🚀</span>
+                  </button>
+                </motion.div>
+              )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       <GlassCard className="p-6">
         <div className="flex items-center space-x-3 text-amber-400 font-mono text-xs mb-2">
           <Compass className="w-4 h-4" />

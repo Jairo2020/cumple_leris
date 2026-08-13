@@ -6,8 +6,8 @@ import { KonamiCode } from '@/components/easter-eggs/KonamiCode';
 import { ConsoleDevTools } from '@/components/easter-eggs/ConsoleDevTools';
 
 export const metadata: Metadata = {
-  title: 'PROYECTO MEMORIA // Recristalización de Fragmentos',
-  description: 'Unidad de Desencriptación de Recuerdos Cifrados de Cartagena',
+  title: '✨ Cumple Leris • Proyecto Memoria 🩺🌌',
+  description: 'Una constelación de recuerdos especiales en Cartagena de Indias dedicados a Leris.',
 };
 
 export default function RootLayout({

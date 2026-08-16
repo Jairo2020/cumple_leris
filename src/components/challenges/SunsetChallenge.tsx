@@ -5,13 +5,22 @@ import { MemoryFragment } from '@/data/memories';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { HintDrawer } from '@/components/ui/HintDrawer';
 import { soundFx } from '@/utils/audio';
-import { Sun, Sliders, CheckCircle2, Sparkles, Image as ImageIcon } from 'lucide-react';
+import { Sun, CheckCircle2, Sparkles, Image as ImageIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface ChallengeProps {
   memory: MemoryFragment;
   onSuccess: () => void;
 }
+
+// Helper para resolver la ruta de imágenes respetando el subdominio basePath de GitHub Pages (/cumple_leris)
+const getImagePath = (path?: string): string => {
+  const target = path || '/images/friday_sunset.jpg';
+  if (target.startsWith('http') || target.startsWith('data:')) return target;
+  const basePath = process.env.NODE_ENV === 'production' ? '/cumple_leris' : '';
+  const cleanPath = target.startsWith('/') ? target : `/${target}`;
+  return `${basePath}${cleanPath}`;
+};
 
 export const SunsetChallenge: React.FC<ChallengeProps> = ({ memory, onSuccess }) => {
   const [focus, setFocus] = useState<number>(20);
@@ -42,6 +51,8 @@ export const SunsetChallenge: React.FC<ChallengeProps> = ({ memory, onSuccess })
     }
   };
 
+  const currentImageSrc = getImagePath(memory.image);
+
   return (
     <div className="space-y-6">
       {/* Encabezado del Reto */}
@@ -66,9 +77,9 @@ export const SunsetChallenge: React.FC<ChallengeProps> = ({ memory, onSuccess })
       {/* Visor interactivo de la Imagen del Atardecer */}
       <GlassCard className="p-6 space-y-6">
         <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-slate-950 aspect-[4/3] max-w-lg mx-auto flex items-center justify-center">
-          {/* Fotografía Real del Atardecer */}
+          {/* Fotografía Real del Atardecer con resolución dinámica de subruta */}
           <motion.img
-            src="/images/friday_sunset.jpg"
+            src={currentImageSrc}
             alt="Atardecer del Viernes"
             style={{
               filter: `blur(${blurAmount}px) brightness(${brightnessAmount})`,
@@ -89,7 +100,7 @@ export const SunsetChallenge: React.FC<ChallengeProps> = ({ memory, onSuccess })
                   Atardecer del Viernes • 17 de Julio
                 </span>
                 <p className="text-sm font-semibold italic text-amber-100">
-                  "El cielo avisando que algo lindo estaba a punto de comenzar..."
+                  &quot;El cielo avisando que algo lindo estaba a punto de comenzar...&quot;
                 </p>
               </div>
             </motion.div>
@@ -147,7 +158,7 @@ export const SunsetChallenge: React.FC<ChallengeProps> = ({ memory, onSuccess })
             disabled={!isRestored}
             className={`w-full py-3.5 px-6 rounded-xl font-semibold text-sm transition-all flex items-center justify-center space-x-2 ${
               isRestored
-                ? 'bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-400 hover:to-rose-500 text-white shadow-[0_0_20px_rgba(245,158,11,0.4)] animate-pulse'
+                ? 'bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-400 hover:to-rose-500 text-white shadow-[0_0_20px_rgba(245,158,11,0.4)] animate-pulse cursor-pointer'
                 : 'bg-slate-800 text-slate-500 cursor-not-allowed border border-white/5'
             }`}
           >
